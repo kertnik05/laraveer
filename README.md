@@ -28,7 +28,7 @@
     ```
 
 4. Voila! All should be working right now.
-   > API: `http://localhost`
+   > [http://localhost](http://localhost)
 
 ----
 
