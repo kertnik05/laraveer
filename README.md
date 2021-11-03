@@ -16,9 +16,7 @@
     docker-compose exec app composer create-project laravel/laravel .
     ```
 
-3. On `src` folder, copy `.env.example` into `.env`
-
-4. Set your database credentials.
+3. Set your database credentials.
 
     **Database**:
     ```
@@ -29,7 +27,7 @@
     DB_PASSWORD=secret
     ```
 
-5. Voila! All should be working right now.
+4. Voila! All should be working right now.
    > API: `http://localhost`
 
 ----
