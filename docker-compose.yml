@@ -1,0 +1,62 @@
+version: '3'
+
+networks: 
+  app:
+    driver: bridge
+
+volumes:
+  dbdata:
+    driver: local
+
+services:
+  nginx:
+    image: nginx:stable-alpine
+    container_name: app-webserver
+    restart: unless-stopped
+    ports: 
+      - '80:80'
+      - '43:443'
+    volumes: 
+      - ./src:/var/www
+      - ./images/nginx:/etc/nginx/conf.d
+    depends_on: 
+      - app
+      - mysql
+    networks: 
+      - app
+
+  mysql:
+    image: mysql:5.7.34
+    container_name: app-db
+    restart: unless-stopped
+    tty: true
+    ports: 
+      - 3306:3306
+    volumes: 
+      - dbdata:/var/lib/mysql/
+      - ./images/mysql/mysql.cnf:/etc/mysql/mysql.cnf
+    environment: 
+      MYSQL_DATABASE: app
+      MYSQL_USER: app
+      MYSQL_PASSWORD: secret
+      MYSQL_ROOT_PASSWORD: secret
+      SERVICE_TAGS: dev
+      SERVICE_NAME: mysql
+    networks: 
+      - app
+
+  app:
+    build:
+      args: 
+        user: app
+        uid: 1000
+      context: ./images/php
+      dockerfile: Dockerfile
+    container_name: laravel-app
+    restart: unless-stopped
+    working_dir: /var/www/
+    volumes: 
+      - ./src:/var/www
+      - ./images/php/app.ini:/usr/local/etc/php/conf.d/app.ini
+    networks: 
+      - app
